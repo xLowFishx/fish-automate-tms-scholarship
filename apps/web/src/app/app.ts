@@ -2,14 +2,34 @@ import { HttpClient } from '@angular/common/http';
 import { DatePipe, JsonPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { firstValueFrom } from 'rxjs';
 import type { AutomationJobRecord, CreateAutomationJobRequest } from '@fish/shared';
 
 @Component({
   selector: 'app-root',
-  imports: [DatePipe, JsonPipe, ReactiveFormsModule],
+  imports: [
+    DatePipe,
+    JsonPipe,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressBarModule,
+    MatToolbarModule,
+  ],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.scss',
 })
 export class App {
   private readonly formBuilder = inject(FormBuilder);
@@ -104,6 +124,10 @@ export class App {
 
   trackByIndex(index: number): number {
     return index;
+  }
+
+  statusClass(status: AutomationJobRecord['status']): string {
+    return `status-chip status-chip--${status}`;
   }
 
   private createFormEntry(key = '', value = '') {
