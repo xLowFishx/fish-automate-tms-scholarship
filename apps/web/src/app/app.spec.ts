@@ -54,7 +54,7 @@ describe('App', () => {
     app.formEntries.at(0).patchValue({ key: 'firstName', value: 'Jamie' });
     app.formEntries.at(1).patchValue({ key: ' lastName ', value: ' Doe ' });
 
-    await app.submit();
+    const submission = app.submit();
 
     const postRequest = httpTestingController.expectOne('http://localhost:3000/automation-jobs');
     expect(postRequest.request.method).toBe('POST');
@@ -83,6 +83,8 @@ describe('App', () => {
       createdAt: '2026-05-20T00:00:00.000Z',
       updatedAt: '2026-05-20T00:00:00.000Z',
     });
+    await fixture.whenStable();
     httpTestingController.expectOne('http://localhost:3000/automation-jobs').flush([]);
+    await submission;
   });
 });

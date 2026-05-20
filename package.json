@@ -10,9 +10,9 @@
   ],
   "scripts": {
     "build": "pnpm --filter @fish/shared build && pnpm --filter @fish/api build && pnpm --filter @fish/automation build && pnpm --filter @fish/web build",
-    "test": "pnpm --filter @fish/shared test && pnpm --filter @fish/api test -- --runInBand && pnpm --filter @fish/web test -- --runInBand",
+    "test": "pnpm --filter @fish/shared test && pnpm --filter @fish/api test -- --runInBand && pnpm --filter @fish/web test",
     "test:api": "pnpm --filter @fish/api test -- --runInBand",
-    "test:web": "pnpm --filter @fish/web test -- --runInBand",
+    "test:web": "pnpm --filter @fish/web test",
     "dev:web": "pnpm --filter @fish/web start",
     "dev:api": "pnpm --filter @fish/api start:dev",
     "dev:automation": "pnpm --filter @fish/automation start:dev",
