@@ -1,0 +1,24 @@
+{
+  "name": "@fish/automation",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Playwright automation worker that processes queued jobs from MongoDB.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "start:dev": "tsx watch src/index.ts",
+    "test": "node -e \"console.log('No automation tests configured')\""
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@fish/shared": "workspace:*",
+    "mongodb": "^6.17.0",
+    "playwright": "^1.60.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.7.3"
+  }
+}

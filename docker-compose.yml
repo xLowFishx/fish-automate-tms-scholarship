@@ -1,0 +1,61 @@
+services:
+  mongodb:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+
+  api:
+    image: node:20
+    working_dir: /workspace
+    command: >
+      sh -c "corepack enable &&
+      corepack prepare pnpm@9.15.9 --activate &&
+      pnpm install &&
+      pnpm --filter @fish/api start:dev"
+    volumes:
+      - .:/workspace
+    environment:
+      PORT: 3000
+      MONGO_URI: mongodb://mongodb:27017/fish-automate-tms-scholarship
+    depends_on:
+      - mongodb
+    ports:
+      - '3000:3000'
+
+  automation:
+    image: mcr.microsoft.com/playwright:v1.60.0-jammy
+    working_dir: /workspace
+    command: >
+      sh -c "corepack enable &&
+      corepack prepare pnpm@9.15.9 --activate &&
+      pnpm install &&
+      pnpm --filter @fish/automation start:dev"
+    volumes:
+      - .:/workspace
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/fish-automate-tms-scholarship
+      AUTOMATION_TARGET_URL: https://example.com
+      AUTOMATION_SUBMIT_SELECTOR: button[type='submit']
+    depends_on:
+      - mongodb
+
+  web:
+    image: node:20
+    working_dir: /workspace
+    command: >
+      sh -c "corepack enable &&
+      corepack prepare pnpm@9.15.9 --activate &&
+      pnpm install &&
+      pnpm --filter @fish/web start"
+    volumes:
+      - .:/workspace
+    depends_on:
+      - api
+    ports:
+      - '4200:4200'
+
+volumes:
+  mongodb_data:

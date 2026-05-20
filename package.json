@@ -1,0 +1,22 @@
+{
+  "name": "fish-automate-tms-scholarship",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fullstack monorepo for TMS scholarship automation.",
+  "packageManager": "pnpm@9.15.9",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm --filter @fish/shared build && pnpm --filter @fish/api build && pnpm --filter @fish/automation build && pnpm --filter @fish/web build",
+    "test": "pnpm --filter @fish/shared test && pnpm --filter @fish/api test -- --runInBand && pnpm --filter @fish/web test",
+    "test:api": "pnpm --filter @fish/api test -- --runInBand",
+    "test:web": "pnpm --filter @fish/web test",
+    "dev:web": "pnpm --filter @fish/web start",
+    "dev:api": "pnpm --filter @fish/api start:dev",
+    "dev:automation": "pnpm --filter @fish/automation start:dev",
+    "postinstall": "pnpm --filter @fish/shared build"
+  },
+  "license": "MIT"
+}
