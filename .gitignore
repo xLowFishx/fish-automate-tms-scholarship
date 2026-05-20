@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+.angular
+.env
+**/node_modules
+**/dist
+**/coverage
+**/.angular
+apps/automation/artifacts

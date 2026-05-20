@@ -1,0 +1,140 @@
+<main class="shell">
+  <section class="hero">
+    <p class="eyebrow">Angular + NestJS + Playwright + MongoDB</p>
+    <h1>TMS scholarship automation console</h1>
+    <p class="hero-copy">
+      Submit scholarship data from the frontend, queue it in the NestJS API,
+      and let the Playwright worker process the job asynchronously.
+    </p>
+    <div class="architecture">
+      <div>Web UI</div>
+      <span>→</span>
+      <div>API queue</div>
+      <span>→</span>
+      <div>MongoDB jobs</div>
+      <span>→</span>
+      <div>Automation worker</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Queue a new automation job</h2>
+        <p>
+          The API stores the request in MongoDB and returns immediately with a
+          <code>pending</code> job.
+        </p>
+      </div>
+    </div>
+
+    <form [formGroup]="applicationForm" (ngSubmit)="submit()" class="job-form">
+      <label>
+        Applicant name
+        <input type="text" formControlName="applicantName" placeholder="Jamie Doe" />
+      </label>
+
+      <label>
+        Email
+        <input type="email" formControlName="email" placeholder="jamie@example.com" />
+      </label>
+
+      <label>
+        Scholarship ID
+        <input type="text" formControlName="scholarshipId" placeholder="TMS-2026-001" />
+      </label>
+
+      <label>
+        Optional target URL override
+        <input
+          type="url"
+          formControlName="targetUrl"
+          placeholder="https://example.com/external-form"
+        />
+      </label>
+
+      <div class="field-grid">
+        <div class="field-grid-header">
+          <h3>External form fields</h3>
+          <button type="button" class="ghost-button" (click)="addField()">Add field</button>
+        </div>
+
+        <div formArrayName="formEntries" class="dynamic-fields">
+          @for (entry of formEntries.controls; track trackByIndex($index)) {
+            <div [formGroupName]="$index" class="dynamic-field-row">
+              <input type="text" formControlName="key" placeholder="field name" />
+              <input type="text" formControlName="value" placeholder="field value" />
+              <button type="button" class="ghost-button" (click)="removeField($index)">
+                Remove
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (successMessage()) {
+        <p class="success">{{ successMessage() }}</p>
+      }
+
+      @if (errorMessage()) {
+        <p class="error">{{ errorMessage() }}</p>
+      }
+
+      <button type="submit" class="primary-button" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Queueing job…' : 'Queue automation job' }}
+      </button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Queued automation jobs</h2>
+        <p>The list below reflects job status stored in MongoDB.</p>
+      </div>
+
+      <button type="button" class="ghost-button" (click)="refreshJobs()">Refresh jobs</button>
+    </div>
+
+    @if (jobs().length === 0) {
+      <p class="empty-state">
+        No jobs yet. Start by queueing a request from the form above.
+      </p>
+    } @else {
+      <div class="jobs">
+        @for (job of jobs(); track job.id) {
+          <article class="job-card">
+            <header>
+              <div>
+                <h3>{{ job.input.applicantName }} · {{ job.input.scholarshipId }}</h3>
+                <p>{{ job.input.email }}</p>
+              </div>
+              <span class="status-badge" [attr.data-status]="job.status">{{ job.status }}</span>
+            </header>
+
+            <dl>
+              <div>
+                <dt>Created</dt>
+                <dd>{{ job.createdAt | date: 'medium' }}</dd>
+              </div>
+              <div>
+                <dt>Updated</dt>
+                <dd>{{ job.updatedAt | date: 'medium' }}</dd>
+              </div>
+              <div>
+                <dt>Form data</dt>
+                <dd><pre>{{ job.input.formData | json }}</pre></dd>
+              </div>
+              @if (job.result) {
+                <div>
+                  <dt>Result</dt>
+                  <dd><pre>{{ job.result | json }}</pre></dd>
+                </div>
+              }
+            </dl>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</main>
